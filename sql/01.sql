@@ -12,3 +12,20 @@
  *
  * Your goal should be to have your queries remain correct even if the data in the database changes arbitrarily.
  */
+
+SELECT COUNT(*)
+FROM customer
+WHERE address_id IN (
+    SELECT address_id
+    FROM address
+    WHERE city_id IN (
+        SELECT city_id
+        FROM city
+        WHERE country_id != (
+            SELECT country_id
+            FROM country
+            WHERE country = 'United States'
+        )
+    )
+);
+
