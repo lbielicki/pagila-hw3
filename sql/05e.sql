@@ -18,13 +18,32 @@
  * ```
  * This problem should be solved by a self join on the "film_category" table.
  */
-
-SELECT DISTINCT f.title
-FROM film f
-JOIN film_category fc1 ON f.film_id = fc1.film_id
-JOIN film_category fc2 ON fc1.category_id = fc2.category_id
-JOIN film f_ac ON fc2.film_id = f_ac.film_id
-WHERE f_ac.title = 'AMERICAN CIRCUS'
-ORDER BY f.title;
-
+SELECT
+    f1.title
+FROM
+    category c1
+JOIN
+    film_category fc ON c1.category_id = fc.category_id
+JOIN
+    film f1 ON fc.film_id = f1.film_id
+WHERE
+    c1.name IN (
+        SELECT
+            name
+        FROM
+            category
+        JOIN
+            film_category USING (category_id)
+        JOIN
+            film USING (film_id)
+        WHERE
+            title = 'AMERICAN CIRCUS'
+    )
+GROUP BY
+    f1.title
+HAVING
+    COUNT(f1.title) >= 2
+    AND f1.title NOT IN ('ACADEMY DINOSAUR', 'AGENT TRUMAN')
+ORDER BY
+    f1.title;
 
